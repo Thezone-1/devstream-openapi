@@ -38,12 +38,12 @@ jobs:
         run: npm run openapi:generate-client
 
       - name: Install TypeScript as devDependency & Compiles TS stubs into JS as mentioned in prepare script
-        working-directory: ./build/client/typescript
+        working-directory: ./build/client-typescript
         run: npm install
 
       # Publish the package to GitHub Packages
       - name: Publish to GitHub Packages
-        working-directory: ./build/client/typescript
+        working-directory: ./build/client-typescript
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
