@@ -1,5 +1,5 @@
 {
-  "name": "devstream-openapi-spec",
+  "name": "@devstream/client-typescript",
   "version": "1.0.0",
   "description": "Devstream OpenAPI Specifications",
   "main": "index.js",
