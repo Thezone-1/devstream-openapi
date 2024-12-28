@@ -1,0 +1,49 @@
+name: Publish TypeScript Client Stub to GitHub Packages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    # Run GitHub Actions locally using Act - https://nektosact.com/introduction.html
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@devstream'
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+
+      - name: Install Dependencies
+        run: npm ci
+          
+      - name: Bundle OpenAPI Specification
+        run: npm run openapi:mint
+      
+      - name: Generate Client Stubs
+        run: npm run openapi:generate-client
+
+      - name: Install TypeScript as devDependency & Compiles TS stubs into JS as mentioned in prepare script
+        working-directory: ./build/client/typescript
+        run: npm install
+
+      # Publish the package to GitHub Packages
+      - name: Publish to GitHub Packages
+        working-directory: ./build/client/typescript
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
